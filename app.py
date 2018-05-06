@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from flask import Flask, request, Response, jsonify
 from flask_cors import CORS
+from datetime import datetime
 from db.database import db_session
-from db.models import Device, Stream
+from db.models import Device, Stream, Room, Score
 import datetime
 import sys
 
@@ -104,6 +105,16 @@ def apiRaspi(mac):
         device = Device(name="Unknown", mac=mac)
         db_session.add(device)
 
-    device.last_seen = datetime.datetime.now()
+    device.last_seen = datetime.now()
     db_session.commit()
     return jsonify(device.serialize())
+
+@app.route('/rooms', methods = ['GET'])
+def apiRooms():
+    rooms = db_session.query(Room).all()
+    return jsonify([s.serialize() for s in rooms])
+
+@app.route('/scores/<int:roomid>', methods = ['GET'])
+def apiScores(roomid):
+    scores = db_session.query(Score).filter_by(room_id=roomid).all()
+    return jsonify([s.serialize() for s in scores])

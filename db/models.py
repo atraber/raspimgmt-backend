@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from db.database import Base
@@ -6,10 +7,6 @@ device_streams_association_table = Table('device_streams', Base.metadata,
     Column('device_id', Integer, ForeignKey('devices.id')),
     Column('stream_id', Integer, ForeignKey('streams.id'))
 )
-
-class Parent(Base):
-    __tablename__ = 'left'
-    id = Column(Integer, primary_key=True)
 
 class Device(Base):
     __tablename__ = 'devices'
@@ -56,4 +53,54 @@ class Stream(Base):
             'url': self.url,
             'width': self.width,
             'height': self.height,
+        }
+
+class Room(Base):
+    __tablename__ = 'rooms'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    scores = relationship("Score")
+
+    def __init__(self, id=None, name=None):
+        self.id = id
+        self.name = name
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'scores': [s.serialize() for s in self.scores],
+        }
+
+class Score(Base):
+    __tablename__ = 'scores'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    room_id = Column(Integer, ForeignKey('rooms.id'))
+    time = Column(DateTime)
+    created_at = Column(DateTime)
+
+    def __init__(self, id=None, name=None, time=None, room=None, created_at=None):
+        self.id = id
+        self.name = name
+
+        if room is None:
+            raise Exception("room cannot be empty")
+        self.room_id = room.id
+
+        self.time = time
+
+        if created_at is None:
+            self.created_at = datetime.now()
+        else:
+            self.created_at = created_at
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'time': self.time,
+            'created_at': self.created_at
         }

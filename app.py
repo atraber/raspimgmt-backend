@@ -28,7 +28,7 @@ def apiStreamAdd():
         db_session.commit()
     else:
         abort(400)
-    return jsonify('ok')
+    return jsonify(stream.serialize())
 
 @app.route('/streams/<int:streamid>', methods = ['POST', 'DELETE'])
 def apiStreamUpdate(streamid):
@@ -65,7 +65,7 @@ def apiDeviceAdd():
         db_session.commit()
     else:
         abort(400)
-    return jsonify('ok')
+    return jsonify(device.serialize())
 
 @app.route('/devices/<int:deviceid>', methods = ['POST', 'DELETE'])
 def apiDeviceUpdate(deviceid):
@@ -116,20 +116,45 @@ def apiRooms():
     rooms = db_session.query(Room).all()
     return jsonify([s.serialize() for s in rooms])
 
-@app.route('/rooms', methods = ['POST'])
+@app.route('/room', methods = ['POST'])
 def apiRoomAdd():
     if request.headers['Content-Type'] == 'application/json':
+        room = Room(
+            name = request.json['name'],
+        )
+        db_session.add(room)
+        db_session.commit()
+    else:
+        abort(400)
+    return jsonify(room.serialize())
+
+@app.route('/rooms/<int:roomid>', methods = ['POST', 'DELETE'])
+def apiRoomUpdate(roomid):
+    if request.method == 'POST':
+        if request.headers['Content-Type'] == 'application/json':
+            db_room = db_session.query(Room).filter_by(id=roomid).first()
+            db_room.name = request.json['name']
+            db_session.commit()
+            return jsonify(db_room.serialize())
+        abort(400)
+    elif request.method == 'DELETE':
+        if request.headers['Content-Type'] == 'application/json':
+            db_session.query(Room).filter_by(id=roomid).delete()
+            db_session.commit()
+            return jsonify('ok')
+        abort(400)
+
+@app.route('/rooms/<int:roomid>/score', methods = ['POST'])
+def apiRoomAddScore(roomid):
+    if request.headers['Content-Type'] == 'application/json':
+        db_room = db_session.query(Room).filter_by(id=roomid).first()
         score = Score(
             name = request.json['name'],
-            time = request.json['time']
+            time = request.json['time'],
+            room = db_room,
         )
         db_session.add(score)
         db_session.commit()
     else:
         abort(400)
-    return jsonify('ok')
-
-@app.route('/scores/<int:roomid>', methods = ['GET'])
-def apiScores(roomid):
-    scores = db_session.query(Score).filter_by(room_id=roomid).all()
-    return jsonify([s.serialize() for s in scores])
+    return jsonify(score.serialize())

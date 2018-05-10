@@ -41,7 +41,7 @@ def apiStreamUpdate(streamid):
             db_stream.height = request.json['height']
             db_stream.orientation = request.json['orientation']
             db_session.commit()
-            return jsonify('ok')
+            return jsonify(db_stream.serialize())
         abort(400)
     elif request.method == 'DELETE':
         if request.headers['Content-Type'] == 'application/json':

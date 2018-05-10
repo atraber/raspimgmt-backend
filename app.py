@@ -158,3 +158,13 @@ def apiRoomAddScore(roomid):
     else:
         abort(400)
     return jsonify(score.serialize())
+
+@app.route('/rooms/<int:roomid>/scores/<int:scoreid>', methods = ['DELETE'])
+def apiRoomDeleteScore(roomid, scoreid):
+    if request.method == 'DELETE':
+        if request.headers['Content-Type'] == 'application/json':
+            db_room = db_session.query(Room).filter_by(id=roomid).first()
+            db_session.query(Score).filter_by(id=scoreid, room_id=db_room.id).delete()
+            db_session.commit()
+            return jsonify('ok')
+    abort(400)

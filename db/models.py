@@ -14,7 +14,7 @@ class Device(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(20))
     mac = Column(String(17))
-    last_seen = Column(DateTime)
+    last_seen = Column(Integer)
     streams = relationship("Stream",
                     secondary=device_streams_association_table)
 
@@ -79,8 +79,8 @@ class Score(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     room_id = Column(Integer, ForeignKey('rooms.id'))
-    time = Column(DateTime)
-    created_at = Column(DateTime)
+    time = Column(Integer)
+    created_at = Column(Integer)
 
     def __init__(self, id=None, name=None, time=None, room=None, created_at=None):
         self.id = id
@@ -93,7 +93,7 @@ class Score(Base):
         self.time = time
 
         if created_at is None:
-            self.created_at = datetime.now()
+            self.created_at = int(datetime.now().timestamp())
         else:
             self.created_at = created_at
 

@@ -105,7 +105,7 @@ def apiRaspi(mac):
         device = Device(name="Unknown", mac=mac)
         db_session.add(device)
 
-    device.last_seen = datetime.now()
+    device.last_seen = int(datetime.now().timestamp())
     db_session.commit()
     return jsonify(device.serialize())
 
@@ -113,6 +113,19 @@ def apiRaspi(mac):
 def apiRooms():
     rooms = db_session.query(Room).all()
     return jsonify([s.serialize() for s in rooms])
+
+@app.route('/rooms', methods = ['POST'])
+def apiRoomAdd():
+    if request.headers['Content-Type'] == 'application/json':
+        score = Score(
+            name = request.json['name'],
+            time = request.json['time']
+        )
+        db_session.add(score)
+        db_session.commit()
+    else:
+        abort(400)
+    return jsonify('ok')
 
 @app.route('/scores/<int:roomid>', methods = ['GET'])
 def apiScores(roomid):

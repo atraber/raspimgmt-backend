@@ -4,7 +4,6 @@ from flask_cors import CORS
 from datetime import datetime
 from db.database import db_session
 from db.models import Device, Stream, Room, Score
-import datetime
 import sys
 
 app = Flask(__name__)
@@ -38,6 +37,9 @@ def apiStreamUpdate(streamid):
             db_stream = db_session.query(Stream).filter_by(id=streamid).first()
             db_stream.name = request.json['name']
             db_stream.url = request.json['url']
+            db_stream.width = request.json['width']
+            db_stream.height = request.json['height']
+            db_stream.orientation = request.json['orientation']
             db_session.commit()
             return jsonify('ok')
         abort(400)

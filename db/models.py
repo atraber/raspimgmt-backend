@@ -40,11 +40,15 @@ class Stream(Base):
     url = Column(String(255))
     width = Column(Integer)
     height = Column(Integer)
+    orientation = Column(Integer)
 
-    def __init__(self, id=None, name=None, url=None):
+    def __init__(self, id=None, name=None, url=None, orientation=0, width=1080, height=720):
         self.id = id
         self.name = name
         self.url = url
+        self.width = width
+        self.height = height
+        self.orientation = orientation
 
     def serialize(self):
         return {
@@ -53,6 +57,7 @@ class Stream(Base):
             'url': self.url,
             'width': self.width,
             'height': self.height,
+            'orientation': self.orientation,
         }
 
 class Room(Base):

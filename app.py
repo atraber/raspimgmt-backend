@@ -91,6 +91,25 @@ def apiDeviceUpdate(deviceid):
             return jsonify('ok')
         abort(400)
 
+@app.route('/devices/screen_on', methods = ['GET'])
+def apiDevicesScreenOn():
+    devices = db_session.query(Device).all()
+
+    for device in devices:
+        device.screen_enable = True
+
+    db_session.commit()
+    return jsonify("ok")
+
+@app.route('/devices/screen_off', methods = ['GET'])
+def apiDevicesScreenOff():
+    devices = db_session.query(Device).all()
+
+    for device in devices:
+        device.screen_enable = False
+
+    db_session.commit()
+    return jsonify("ok")
 
 def number_to_mac(n):
     arr = []

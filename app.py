@@ -74,6 +74,7 @@ def apiDeviceUpdate(deviceid):
             db_device = db_session.query(Device).filter_by(id=deviceid).first()
             db_device.name = request.json['name']
             db_device.mac = request.json['mac']
+            db_device.screen_enable = request.json['screen_enable']
 
             db_device.streams = []
             for stream in request.json['streams']:

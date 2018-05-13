@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from db.database import Base
 
@@ -14,20 +14,23 @@ class Device(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(20))
     mac = Column(String(17))
+    screen_enable = Column(Boolean)
     last_seen = Column(Integer)
     streams = relationship("Stream",
                     secondary=device_streams_association_table)
 
-    def __init__(self, id=None, name=None, mac=None):
+    def __init__(self, id=None, name=None, mac=None, screen_enable=True):
         self.id = id
         self.name = name
         self.mac = mac
+        self.screen_enable = screen_enable
 
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
             'mac': self.mac,
+            'screen_enable': self.screen_enable,
             'last_seen': self.last_seen,
             'streams': [s.serialize() for s in self.streams],
         }

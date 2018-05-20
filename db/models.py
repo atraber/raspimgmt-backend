@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Table
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship
 from db.database import Base
 
@@ -68,6 +68,9 @@ class Room(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
+    description = Column(Text)
+    profile_image = Column(String(255))
+    bg_image = Column(String(255))
     scores = relationship("Score")
 
     def __init__(self, id=None, name=None):
@@ -78,6 +81,9 @@ class Room(Base):
         return {
             'id': self.id,
             'name': self.name,
+            'description': self.description,
+            'profile_image': self.profile_image,
+            'bg_image': self.bg_image,
             'scores': [s.serialize() for s in self.scores],
         }
 

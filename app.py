@@ -154,6 +154,9 @@ def apiRoomUpdate(roomid):
         if request.headers['Content-Type'] == 'application/json':
             db_room = db_session.query(Room).filter_by(id=roomid).first()
             db_room.name = request.json['name']
+            db_room.description = request.json['description']
+            db_room.profile_image = request.json['profile_image']
+            db_room.bg_image = request.json['bg_image']
             db_session.commit()
             return jsonify(db_room.serialize())
         abort(400)

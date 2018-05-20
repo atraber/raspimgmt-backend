@@ -42,11 +42,11 @@ def init_db():
     db_session.commit()
 
     bib = db_session.query(Room).filter_by(name='Die geheimnisvolle Bibliothek').first()
-    db_session.add(Score(name='Michel', time=60*23, room=bib))
+    db_session.add(Score(name='Michel', time=60*13, room=bib))
     db_session.add(Score(name='Globi', time=60*45, room=bib))
     db_session.add(Score(name='Ale', time=60*55, room=bib))
-    db_session.add(Score(name='Alice', time=60*60, room=bib))
-    db_session.add(Score(name='Dom', time=60*75, room=bib))
+    db_session.add(Score(name='Alice', time=60*10, room=bib))
+    db_session.add(Score(name='Dom', time=60*5, room=bib))
     db_session.commit()
 
     print('Initialized the database.')

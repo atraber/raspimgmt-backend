@@ -71,7 +71,7 @@ class Room(Base):
     description = Column(Text)
     profile_image = Column(String(255))
     bg_image = Column(String(255))
-    scores = relationship("Score")
+    scores = relationship("Score", order_by="Score.time")
 
     def __init__(self, id=None, name=None):
         self.id = id
